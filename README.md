@@ -10,25 +10,22 @@ This application trains a model to reverse the process of adding Gaussian noise 
 
 ```
 diffusion_project/
-├── main_interface.py # Streamlit UI for model selection and image generation
-├── training_pipeline.py # Training loop using DDPM loss on Oxford Flowers dataset
-├── diffusion_core.py # Core DDPM logic: beta schedule, forward process, and loss
-├── baseline_unet.py # KaushikUnet: simple U-Net architecture without attention
-├── advanced_unet.py # Enhanced U-Net with attention and residual blocks
-├── sampling_loop.py # Reverse diffusion sampling for inference
-├── image_utils.py # Image preprocessing and visualization utilities
-├── setup_env.py # Device configuration and core imports
-├── model_400pt # Pretrained model checkpoint (with attention)
-├── new_linear_model_1090.pt # Pretrained model checkpoint (baseline)
-├── requirements.txt # Python dependencies for training and inference
-├── README.md # Project overview and usage guide
-└── Notebooks/ # Jupyter notebooks for development and experimentation
-├── autoencoder_on_a_huggingface_dataset.ipynb
-│ # Early experiment with autoencoders on Hugging Face datasets
-├── Unconditional_Image_Generation_Using_Diffusion_Models.ipynb
-│ # Initial diffusion model implementation and output samples
-└── Unconditional_Image_Generation_using_Diffusion_Models_v2_0.ipynb
-# Final refined version with annotated steps, visuals, and model comparisons
+├── main_interface.py         # Streamlit UI for model selection and image generation
+├── training_pipeline.py      # Training loop using DDPM loss on Oxford Flowers dataset
+├── diffusion_core.py         # Core DDPM logic: beta schedule, forward process, and loss
+├── baseline_unet.py          # KaushikUnet: simple U-Net architecture without attention
+├── advanced_unet.py          # Enhanced U-Net with attention and residual blocks
+├── sampling_loop.py          # Reverse diffusion sampling for inference
+├── image_utils.py            # Image preprocessing and visualization utilities
+├── setup_env.py              # Device configuration and core imports
+├── model_400pt               # Pretrained model checkpoint (with attention)
+├── new_linear_model_1090.pt  # Pretrained model checkpoint (baseline)
+├── requirements.txt          # Python dependencies for training and inference
+├── README.md                 # Project overview and usage guide
+└── Notebooks/                # Jupyter notebooks for development and experimentation
+├── autoencoder_on_a_huggingface_dataset.ipynb                         # Early experiment with autoencoders on Hugging Face datasets
+├── Unconditional_Image_Generation_Using_Diffusion_Models.ipynb        # Initial diffusion model implementation and output samples
+└── Unconditional_Image_Generation_using_Diffusion_Models_v2_0.ipynb   # Final refined version with annotated steps, visuals, and model comparisons
 ```
 
 ## How to Run
