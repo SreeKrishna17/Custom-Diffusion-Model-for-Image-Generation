@@ -41,8 +41,8 @@ streamlit run main_interface.py
 
 When you launch the app:
 - Choose between:
-  - KaushikUnet (no attention)
-  - Improved U-Net (with attention layers)
+  - Model without attention
+  - Model with attention 
 - Click “Generate image” to sample 60 images from the trained model.
 - View images in grid format, with each row representing samples at a time step.
 
