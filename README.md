@@ -47,7 +47,7 @@ When you launch the app:
 - Choose between:
   - KaushikUnet (no attention)
   - Improved U-Net (with attention layers)
-- Click “Generate image” to sample 60 images from the trained model.
+- Click “Generate image” to sample 60 images from the trained model. (will take 8-9 mins in cpu and 3-4 mins in GPU)
 - View images in grid format, with each row representing samples at a time step.
 
 ## Notebooks
