@@ -64,9 +64,9 @@ Use these for documenting your experimentation or showcasing model interpretabil
 | File | Purpose |
 |------|---------|
 | diffusion_core.py | Implements beta scheduling, noise addition, and loss |
-| baseline_unet.py | Defines a basic encoder-decoder U-Net (KaushikUnet) |
-| advanced_unet.py | U-Net with attention + residual connections |
+| baseline_unet.py  | Defines a basic encoder-decoder U-Net (KaushikUnet) |
+| advanced_unet.py  | U-Net with attention + residual connections |
 | training_pipeline.py | Loads Oxford Flowers dataset and trains the DDPM |
-| sampling_loop.py | Reconstructs images from noise during inference |
+| sampling_loop.py  | Reconstructs images from noise during inference |
 | main_interface.py | UI to toggle between models and visualize outputs |
-| image_utils.py | Preprocessing steps and image display helpers |
+| image_utils.py    | Preprocessing steps and image display helpers |
