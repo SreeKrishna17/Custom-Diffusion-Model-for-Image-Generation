@@ -9,7 +9,7 @@ This application trains a model to reverse the process of adding Gaussian noise 
 ## Project Structure
 
 ```
-kaushik_diffusion_project/
+diffusion_project/
 ├── main_interface.py         # Streamlit UI to run inference
 ├── training_pipeline.py      # Training loop for DDPM
 ├── diffusion_core.py         # Core logic for noise scheduling and diffusion
