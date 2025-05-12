@@ -2,10 +2,11 @@ from setup_env import *
 from image_utils import *
 from diffusion_core import *
 from baseline_unet import *
+import csv
+import os
 
 @torch.no_grad()
 def sample_timestep(x, t):
-
     betas_t = extract_by_timestep_index(betas, t, x.shape)
     sqrt_one_minus_alphas_cumprod_t = extract_by_timestep_index(
         sqrt_one_minus_alphas_cumprod, t, x.shape
@@ -18,7 +19,6 @@ def sample_timestep(x, t):
     posterior_variance_t = extract_by_timestep_index(posterior_variance, t, x.shape)
 
     if t == 0:
-
         return model_mean
     else:
         noise = torch.randn_like(x)
@@ -26,56 +26,69 @@ def sample_timestep(x, t):
 
 @torch.no_grad()
 def sample_plot_image():
-    # Sample noise
     img = torch.randn((1, 3, img_size, img_size), device=device)
     plt.figure(figsize=(15,15))
     plt.axis('off')
     num_images = 10
-    stepsize = int(timesteps/num_images)
+    stepsize = int(timesteps / num_images)
 
-    for i in range(0,timesteps)[::-1]:
+    for i in range(timesteps - 1, -1, -1):
         t = torch.full((1,), i, device=device, dtype=torch.long)
         img = sample_timestep(img, t)
-
         img = torch.clamp(img, -1.0, 1.0)
         if i % stepsize == 0:
-            plt.subplot(1, num_images, int(i/stepsize)+1)
+            plt.subplot(1, num_images, int(i / stepsize) + 1)
             visualize_tensor_image(img.detach().cpu())
     plt.show()
-
-
 
 data = load_dataset("nelorth/oxford-flowers", split="train")
 
 transform = Compose([
-        Resize([img_size, img_size]),
-        CenterCrop(img_size),
-        ToTensor(),
-        Lambda(lambda t: (t * 2) - 1)
+    Resize([img_size, img_size]),
+    CenterCrop(img_size),
+    ToTensor(),
+    Lambda(lambda t: (t * 2) - 1)
 ])
 
 data_tensor = transform(data[0]['image']).unsqueeze_(0).to(device)
 
 for i in tqdm(range(1, 1000)):
-  x = transform(data[i]["image"]).unsqueeze_(0).to(device)
-  data_tensor = torch.cat((data_tensor, x))
+    x = transform(data[i]["image"]).unsqueeze_(0).to(device)
+    data_tensor = torch.cat((data_tensor, x))
 
-data_loader = torch.utils.data.DataLoader(dataset = data_tensor, batch_size=BATCH_SIZE, shuffle = True, drop_last  =True)
+data_loader = torch.utils.data.DataLoader(dataset=data_tensor, batch_size=BATCH_SIZE, shuffle=True, drop_last=True)
 
 model = KaushikUnet()
-device = "cuda" if torch.cuda.is_available() else "cpu"
 model.to(device)
 optimizer = Adam(model.parameters(), lr=0.001)
-epochs = 25
+epochs = 100
+
+all_losses = []
+log_dir = "loss_logs"
+os.makedirs(log_dir, exist_ok=True)
+
 for epoch in tqdm(range(epochs)):
-    for step, batch in tqdm(enumerate(data_loader)):
-      optimizer.zero_grad()
+    step_losses = []
 
-      t = torch.randint(0, timesteps, (BATCH_SIZE,), device=device).long()
-      loss = calculate_diffusion_loss(model, batch, t)
-      loss.backward()
-      optimizer.step()
+    for step, batch in tqdm(enumerate(data_loader), total=len(data_loader)):
+        optimizer.zero_grad()
+        t = torch.randint(0, timesteps, (BATCH_SIZE,), device=device).long()
+        loss = calculate_diffusion_loss(model, batch, t)
+        loss.backward()
+        optimizer.step()
 
-      if epoch % 5 == 0 and step == 0:
-        print(f"Epoch {epoch} | step {step:03d} Loss: {loss.item()} ")
-        sample_plot_image()
+        step_losses.append(loss.item())
+
+        if epoch % 5 == 0 and step == 0:
+            print(f"Epoch {epoch} | Step {step:03d} | Loss: {loss.item():.6f}")
+            sample_plot_image()
+
+    all_losses.append(step_losses)
+
+    if (epoch + 1) % 10 == 0:
+        csv_filename = os.path.join(log_dir, f"losses_epoch_{epoch+1}.csv")
+        with open(csv_filename, mode="w", newline="") as f:
+            writer = csv.writer(f)
+            writer.writerow(["Step", "Loss"])
+            for i, loss_val in enumerate(step_losses):
+                writer.writerow([i, loss_val])
